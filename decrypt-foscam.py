@@ -187,18 +187,15 @@ if __name__ == "__main__":
 				TEMP = TEMP.replace("OPENSSL_KEY",ENC_KEYS[key])
 
 				p = subprocess.Popen(TEMP, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-				p_stderr = p.stderr.readlines()
-				if not len(p_stderr):
-					p = subprocess.Popen("gzip -t " + outfile + "", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-					p_stderr = p.stderr.read()
-					if not (p_stderr):
-						print "Decrypted with: {}".format(TEMP)
-						sys.exit(0)
-					else:
-						print "Decryption NOT OK: {}".format(TEMP)
-						os.remove(outfile)
+				p = subprocess.Popen("gzip -t " + outfile + "", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+				p_stderr = p.stderr.read()
+				if not (p_stderr):
+					print "Decrypted with: {}".format(TEMP)
+					sys.exit(0)
 				else:
-					print p_stderr[0],
+					print "Decryption NOT OK: {}".format(TEMP)
+                                        if (os.path.isfile(outfile)):
+  					    os.remove(outfile)
 	print "Cleaning up..."
 	os.remove(outfile)
 	sys.exit(1)

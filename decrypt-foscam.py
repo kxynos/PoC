@@ -8,8 +8,9 @@ import os
 import subprocess
 import sys
 import argparse
+from time import sleep
 
-CMD = "openssl enc -d CIPHER -in IN_FILE -out OUT_FILE -md DIGEST -k 'OPENSSL_KEY'"
+CMD = "openssl enc -d CIPHER -in 'IN_FILE' -out 'OUT_FILE' -md DIGEST -k 'OPENSSL_KEY'"
 
 if __name__ == "__main__":
 
@@ -91,7 +92,8 @@ if __name__ == "__main__":
 		38:'BpP+2R9*Q',	# exist (config) - encrypt/decrypt
 		39:'Ak47@99',	# l: factory~, p: Ak47@99 @ webService
 		40:'rizhi6789', # dd if=ipcLog.bin | openssl des3 -d -k rizhi6789 [...]
-		41:'foscam'	# l: admin, p: foscam @ UDTMediaServer
+		41:'foscam',	# l: admin, p: foscam @ UDTMediaServer
+		42:'WWzift*v2'
 		}
 
 	CIPHER = {
@@ -178,7 +180,6 @@ if __name__ == "__main__":
 	for chipher in CIPHER.keys():
 		for digest in DIGEST.keys():
 			for key in ENC_KEYS.keys():
-
 				TEMP = CMD
 				TEMP = TEMP.replace("IN_FILE",infile)
 				TEMP = TEMP.replace("OUT_FILE",outfile)
@@ -187,22 +188,19 @@ if __name__ == "__main__":
 				TEMP = TEMP.replace("OPENSSL_KEY",ENC_KEYS[key])
 
 				p = subprocess.Popen(TEMP, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+				sleep(0.1)
 				p = subprocess.Popen("gzip -t " + outfile + "", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+				#p = subprocess.Popen("tar tvf " + outfile + "", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 				p_stderr = p.stderr.read()
-				if not (p_stderr):
-					print "Decrypted with: {}".format(TEMP)
+				sleep(0.1)
+  				if not (p_stderr):
+					print "\n*****\nDecrypted with: {}".format(TEMP)
+					print "\n*****"
 					sys.exit(0)
 				else:
-					print "Decryption NOT OK: {}".format(TEMP)
-                                        if (os.path.isfile(outfile)):
-  					    os.remove(outfile)
+					print "\nDecryption NOT OK: {}".format(TEMP)
+					if (os.path.isfile(outfile)):
+						os.remove(outfile)
 	print "Cleaning up..."
 	os.remove(outfile)
 	sys.exit(1)
-
-
-
-
-
-
-

@@ -202,5 +202,5 @@ if __name__ == "__main__":
 					if (os.path.isfile(outfile)):
 						os.remove(outfile)
 	print "Cleaning up..."
-	os.remove(outfile)
+	if (os.path.isfile(outfile)): os.remove(outfile)
 	sys.exit(1)
